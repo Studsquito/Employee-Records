@@ -79,11 +79,17 @@ void listEmployee() {
     }
 }
 
+/**
+ * @brief Given a name, it changes 1 of 4 things,
+ *  or the entire structure.
+ * 
+ */
 void modifyEmployee() {
     Employee temp, temp2;
     char modified[100];
     int choice = -1, total = 0, counter = 0;
 
+    // Check if file is empty
     if(fp != NULL) {
         fseek(fp, 0, SEEK_END);
         if(ftell(fp) == 0) {
@@ -92,17 +98,21 @@ void modifyEmployee() {
         }
     }
 
+    // Open temporary file
     fTemp = fopen("temp.bin", "wb+");
     if(fTemp == NULL) {
         printf("Temporary file failed to be made.\n");
         exit(-13);
     }
 
+    // User input to modify person
     printf("Which employee do you want to modify? ");
     fgets(modified, sizeof(modified), stdin);
     omitNewLine(modified);
-    //scanf("%s", modified);
 
+`   // If the name matches the one in file, then
+    // Set that to our temp2 variable. Increments
+    // total and counter.
     rewind(fp);
     while(!feof(fp)) {
         if(fread(&temp, sizeof(Employee), 1, fp)) {
@@ -117,7 +127,9 @@ void modifyEmployee() {
             counter++;
         }
     }
-
+    
+    // If the two numbers are the same, then
+    // there are no employees with the name.
     if(total == counter) {
         printf("No employee found.\n\n");
         if(remove("temp.bin") != 0) {
@@ -127,6 +139,7 @@ void modifyEmployee() {
         return;
     }
 
+    // Prompt user to what to modify
     printf("\nWhat do you want to change?\n");
     printf(" [1] Name\n");
     printf(" [2] Age\n");
@@ -187,13 +200,16 @@ void modifyEmployee() {
             }
             return;
     }
+    // Get rid of '\n' and replace it with \0
     omitNewLine(temp2.name);
     omitNewLine(temp2.id);
     clearKeyboardBuffer();
 
+    // Move file pointer to EOF
     fseek(fTemp, 0, SEEK_END);
     fwrite(&temp2, sizeof(Employee), 1, fTemp);
 
+    // Copy contents of temp.bin to main file
     fp = freopen(FILENAME, "wb+", fp);
     rewind(fTemp);
     while(!feof(fTemp)) {
@@ -326,6 +342,14 @@ void clearKeyboardBuffer() {
     while ((c = getchar()) != '\n' && c != EOF) { }
 }
 
+/**
+ * @brief Removes the \n at the end of 
+ *  fgets. fgets also includes \n when
+ *  getting input.
+ * 
+ * @param str The new line we want to
+ *  omit.
+ */
 void omitNewLine(char* str) {
     int n = -1;
     if((n = strlen(str)) > 0 && str[n - 1] == '\n') {
