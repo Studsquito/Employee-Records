@@ -30,7 +30,7 @@ void addEmployee() {
 
     // Write to file
     fwrite(&temp, sizeof(temp), 1, fp);
-    printf('\n');
+    printf("\n");
 }
 
 /**
@@ -70,7 +70,55 @@ void listEmployee() {
 }
 
 void deleteEmployee() {
+    Employee temp;
+    char* deleted;
+    int counter, total;
     
+    fTemp = fopen("temp.bin", "wb+");
+    if(fTemp == NULL) {
+        printf("Temporary file failed to be made.\n");
+        exit(-13);
+    }
+
+    printf("Which employee would you like to delete: ");
+    scanf("%s", deleted);
+    clearKeyboardBuffer();
+
+    rewind(fp);
+    while(!feof(fp)) {
+        if(fread(&temp, sizeof(Employee), 1, fp) > 0){
+            if(temp.name != deleted){
+                fwrite(&temp, sizeof(temp), 1, fTemp);
+                total++;
+            }
+            counter++;
+        }
+    }
+
+    if(total == counter) {
+        printf("No employee found.\n");
+        if(remove("temp.bin") != 0) {
+            printf("File not successfully removed.\n");
+            exit(-5);
+        }
+        return;
+    }
+
+    //rewind(fp);
+    fp = freopen(FILENAME, "wb+", fp);
+    rewind(fTemp);
+    while(!feof(fTemp)) {
+        if(fread(&temp, sizeof(Employee), 1, fTemp) > 0){
+            fwrite(&temp, sizeof(temp), 1, fp);
+        }
+    }    
+
+    fclose(fTemp);
+    if(remove("temp.bin") != 0) {
+            printf("File not successfully removed.\n");
+            exit(-5);
+    }
+    printf("Successfully deleted.\n");
 }
 
 void clearKeyboardBuffer() {

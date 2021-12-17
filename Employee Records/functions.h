@@ -4,7 +4,7 @@
 
 #define FILENAME "EmployeeRecords.bin"
 //char* fileName = "EmployeeRecords.bin";
-FILE* fp, fTemp;
+FILE* fp, *fTemp;
 
 typedef struct employee {
     char name[40];
