@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "functions.h"
 
 /**
@@ -68,26 +69,38 @@ void listEmployee() {
         }
     }
 }
-
+/**
+ * @brief Temporarily creates a file
+ *  to hold the transferred content of 
+ *  the main file. It goes over the file
+ *  searching for the name that wants to 
+ *  be deleted. Once done, it deletes that
+ *  temp file and transfers content back
+ *  to the main file.
+ *  
+ */
 void deleteEmployee() {
     Employee temp;
-    char* deleted;
-    int counter, total;
+    char deleted[100];
+    int counter = 0, total = 0;
     
+    // Temporarily create a file.
     fTemp = fopen("temp.bin", "wb+");
     if(fTemp == NULL) {
         printf("Temporary file failed to be made.\n");
         exit(-13);
     }
 
+    // Prompt user which person to delete.
     printf("Which employee would you like to delete: ");
     scanf("%s", deleted);
     clearKeyboardBuffer();
 
+    // Iterate through file to transfer contents.
     rewind(fp);
     while(!feof(fp)) {
         if(fread(&temp, sizeof(Employee), 1, fp) > 0){
-            if(temp.name != deleted){
+            if(strcmp(temp.name, deleted) != 0) {
                 fwrite(&temp, sizeof(temp), 1, fTemp);
                 total++;
             }
@@ -95,8 +108,11 @@ void deleteEmployee() {
         }
     }
 
+    // If the number transferred is equal to the
+    // total amount of employees, then no person
+    // is found with that name.
     if(total == counter) {
-        printf("No employee found.\n");
+        printf("No employee found.\n\n");
         if(remove("temp.bin") != 0) {
             printf("File not successfully removed.\n");
             exit(-5);
@@ -104,7 +120,8 @@ void deleteEmployee() {
         return;
     }
 
-    //rewind(fp);
+    // Re-open the main file and transfer the contents
+    // from temp to the main file.
     fp = freopen(FILENAME, "wb+", fp);
     rewind(fTemp);
     while(!feof(fTemp)) {
@@ -113,11 +130,13 @@ void deleteEmployee() {
         }
     }    
 
+    // Remove the temp.bin file.
     fclose(fTemp);
     if(remove("temp.bin") != 0) {
             printf("File not successfully removed.\n");
             exit(-5);
     }
+    
     printf("Successfully deleted.\n");
 }
 
