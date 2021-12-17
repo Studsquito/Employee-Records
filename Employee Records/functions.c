@@ -7,7 +7,7 @@
  * @brief Appends an employee
  *  to the end of the file using
  *  fseek.
- * 
+ *
  */
 void addEmployee() {
     // Move the cursor to the EOF
@@ -37,12 +37,12 @@ void addEmployee() {
 /**
  * @brief List the employees from the open
  *  file.
- * 
+ *
  */
 void listEmployee() {
     // Reset file pointer
-    rewind(fp); 
-    
+    rewind(fp);
+
     // If the file is empty,
     // don't print anything
     if(fp != NULL) {
@@ -50,13 +50,12 @@ void listEmployee() {
         if(ftell(fp) == 0) {
             printf("File is empty.\n\n");
             return;
-        } 
-
+        }
     }
 
     // Reset file pointer
     rewind(fp);
-    
+
     // While the File != EOF, keep printing
     while(!feof(fp)) {
         Employee temp;
@@ -69,21 +68,26 @@ void listEmployee() {
         }
     }
 }
+
+void modifyEmployee() {
+    
+}
+
 /**
  * @brief Temporarily creates a file
- *  to hold the transferred content of 
+ *  to hold the transferred content of
  *  the main file. It goes over the file
- *  searching for the name that wants to 
+ *  searching for the name that wants to
  *  be deleted. Once done, it deletes that
  *  temp file and transfers content back
  *  to the main file.
- *  
+ *
  */
 void deleteEmployee() {
     Employee temp;
     char deleted[100];
     int counter = 0, total = 0;
-    
+
     // Temporarily create a file.
     fTemp = fopen("temp.bin", "wb+");
     if(fTemp == NULL) {
@@ -128,7 +132,7 @@ void deleteEmployee() {
         if(fread(&temp, sizeof(Employee), 1, fTemp) > 0){
             fwrite(&temp, sizeof(temp), 1, fp);
         }
-    }    
+    }
 
     // Remove the temp.bin file.
     fclose(fTemp);
@@ -136,8 +140,43 @@ void deleteEmployee() {
             printf("File not successfully removed.\n");
             exit(-5);
     }
-    
+
     printf("Successfully deleted.\n");
+}
+
+/**
+ * @brief Prints out the number of
+ *  employees by iterating through it.
+ *
+ */
+void numOfEmployees() {
+    Employee temp;
+    int counter = 0;
+
+    // Check to see if file is empty.
+    rewind(fp);
+    if(fp != NULL) {
+        fseek(fp, 0, SEEK_END);
+        if(ftell(fp) == 0) {
+            printf("File is empty.\n\n");
+            return;
+        }
+    }
+
+    // Iterate through file to count.
+    rewind(fp);
+    while(!feof(fp)) {
+        if(fread(&temp, sizeof(Employee), 1, fp) > 0) {
+            counter++;
+        }
+    }
+
+    // Print out number of employees
+    if(counter) {
+        printf("The number of employees is: %d\n\n", counter);
+    }
+
+    return;
 }
 
 void clearKeyboardBuffer() {
