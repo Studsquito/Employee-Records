@@ -12,4 +12,4 @@ functions.o: functions.c
 	$(CC) $(FLAGS) -c functions.c -o functions.o
 
 clean:
-	rm -f $(OBJECTS)
+	rm -f $(OBJECTS) driver
