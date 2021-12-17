@@ -5,4 +5,4 @@ employee records. It is all done in C.
 
 
 Here is Walter.
-![image](https://user-images.githubusercontent.com/53905532/146486605-4a99a0fb-ecef-408c-adf5-7c20dfddd4fe.png)
+![image](https://user-images.githubusercontent.com/53905532/146486646-84925474-0849-4d12-ba5c-4bd4135e8615.png)
