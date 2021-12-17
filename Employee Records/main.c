@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include "functions.h"
 
 int main(int argc, char* argv[]) {
@@ -31,6 +32,11 @@ int main(int argc, char* argv[]) {
         scanf("%d", &choice);
         clearKeyboardBuffer();
         printf("\n");
+        if(isdigit(choice) && (choice > 9 || choice < 1)) {
+            printf("Wrong input given.\n Try again.\n\n");
+            choice = -1;
+            continue;
+        }
         switch(choice){
             case 1:
                 addEmployee();

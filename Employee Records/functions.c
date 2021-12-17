@@ -12,7 +12,6 @@
 void addEmployee() {
     // Move the cursor to the EOF
     fseek(fp, 0, SEEK_END);
-    int leng = 0;
     Employee temp;
 
     // Prompt user for Employee info
@@ -72,10 +71,10 @@ void listEmployee() {
         Employee temp;
         // fread returns the total # of elements reads
         if(fread(&temp, sizeof(Employee), 1, fp) > 0){
-            printf("Name: \t%8s\n", temp.name);
-            printf("Age: \t%8d\n", temp.age);
-            printf("Salary: %8.2f\n", temp.salary);
-            printf("Work ID:%8s\n\n", temp.id);
+            printf("Name:\t\t%s\n", temp.name);
+            printf("Age:\t\t%d\n", temp.age);
+            printf("Salary:\t\t%.2f\n", temp.salary);
+            printf("Work ID:\t%s\n\n", temp.id);
         }
     }
 }
@@ -142,9 +141,7 @@ void modifyEmployee() {
     switch(choice) {
         case 1:
             printf("\nName: ");
-            //scanf("%s", temp2.name);
             fgets(temp2.name, sizeof(temp2.name), stdin);
-            //omitNewLine(temp2.name);
             break;
         case 2:
             printf("\nAge: ");
@@ -159,12 +156,9 @@ void modifyEmployee() {
         case 4:
             printf("\nWork ID: ");
             fgets(temp2.id, sizeof(temp2.id), stdin);
-            //omitNewLine(temp2.id);
-            //scanf("%s", temp2.id);
             break;
         case 5:
             printf("Name: ");
-            //scanf("%s", temp2.name);
             fgets(temp2.name, sizeof(temp2.name), stdin);
             printf("Age: ");
             scanf("%d", &temp2.age);
@@ -173,7 +167,7 @@ void modifyEmployee() {
             scanf("%f", &temp2.salary);
             clearKeyboardBuffer();
             printf("Work ID: ");
-            fgets(temp2.name, sizeof(temp2.id), stdin);
+            fgets(temp2.id, sizeof(temp2.id), stdin);
             break;
         case 6:
             printf("Returning to main menu..\n");
@@ -195,6 +189,7 @@ void modifyEmployee() {
     }
     omitNewLine(temp2.name);
     omitNewLine(temp2.id);
+    clearKeyboardBuffer();
 
     fseek(fTemp, 0, SEEK_END);
     fwrite(&temp2, sizeof(Employee), 1, fTemp);
@@ -242,8 +237,9 @@ void deleteEmployee() {
 
     // Prompt user which person to delete.
     printf("Which employee would you like to delete: ");
-    scanf("%s", deleted);
-    clearKeyboardBuffer();
+    //scanf("%s", deleted);
+    fgets(deleted, sizeof(deleted), stdin);
+    omitNewLine(deleted);
 
     // Iterate through file to transfer contents.
     rewind(fp);
