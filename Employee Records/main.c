@@ -39,13 +39,13 @@ int main(int argc, char* argv[]) {
                 listEmployee();
                 break;
             case 3:
-                //modifyEmployee();
+                modifyEmployee();
                 break;
             case 4:
                 deleteEmployee();
                 break;
             case 5:
-                //listEmployee();
+                numOfEmployees();
                 break;
             case 6:
                 fclose(fp);
