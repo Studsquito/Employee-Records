@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
         printf(" [4] Delete employee\n");
         printf(" [5] Number of Employees registered\n");
         printf(" [6] Exit\n");
-        printf("Your choice: ");
+        printf("Choice: ");
         scanf("%d", &choice);
         clearKeyboardBuffer();
         printf("\n");
@@ -51,6 +51,10 @@ int main(int argc, char* argv[]) {
                 fclose(fp);
                 printf("THANK YOU FOR USING OUR SYSTEM.\nGOODBYE\n\n");
                 return 0;
+            default:
+                printf("Incorrect choice given.\n\n");
+                choice = -1;
+                break;
         }
     }
 

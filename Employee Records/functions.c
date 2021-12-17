@@ -12,17 +12,28 @@
 void addEmployee() {
     // Move the cursor to the EOF
     fseek(fp, 0, SEEK_END);
+    int leng = 0;
     Employee temp;
 
     // Prompt user for Employee info
     printf("Name: ");
-    scanf("%s", temp.name);
+    fgets(temp.name, sizeof(temp.name), stdin);
     printf("Age: ");
     scanf("%d", &temp.age);
+    clearKeyboardBuffer();
     printf("Salary: ");
     scanf("%f", &temp.salary);
+    clearKeyboardBuffer();
     printf("Work ID: ");
-    scanf("%s", temp.id);
+    fgets(temp.id, sizeof(temp.id), stdin);
+    
+    omitNewLine(temp.name);
+    omitNewLine(temp.id);
+    /* if((leng = strlen(temp.name)) > 0 && temp.name[leng - 1] == '\n')
+        temp.name[leng - 1] = '\0';
+    
+    if((leng = strlen(temp.id)) > 0 && temp.id[leng - 1] == '\n')
+        temp.id[leng - 1] = '\0'; */
 
     if(fp == NULL) {
         printf("File isn't open.\n");
@@ -70,7 +81,141 @@ void listEmployee() {
 }
 
 void modifyEmployee() {
-    
+    Employee temp, temp2;
+    char modified[100];
+    int choice = -1, total = 0, counter = 0;
+
+    if(fp != NULL) {
+        fseek(fp, 0, SEEK_END);
+        if(ftell(fp) == 0) {
+            printf("File is empty.\n\n");
+            return;
+        }
+    }
+
+    fTemp = fopen("temp.bin", "wb+");
+    if(fTemp == NULL) {
+        printf("Temporary file failed to be made.\n");
+        exit(-13);
+    }
+
+    printf("Which employee do you want to modify? ");
+    fgets(modified, sizeof(modified), stdin);
+    omitNewLine(modified);
+    //scanf("%s", modified);
+
+    rewind(fp);
+    while(!feof(fp)) {
+        if(fread(&temp, sizeof(Employee), 1, fp)) {
+            printf("%d\n", strcmp(temp.name, modified));
+            if(strcmp(temp.name, modified) == 0) {
+                temp2 = temp;
+            }
+            else if(strcmp(temp.name, modified) != 0) {
+                fwrite(&temp, sizeof(Employee), 1, fTemp);
+                total++;
+            }
+            counter++;
+        }
+    }
+
+    if(total == counter) {
+        printf("No employee found.\n\n");
+        if(remove("temp.bin") != 0) {
+            printf("File not successfully removed.\n");
+            exit(-5);
+        }
+        return;
+    }
+
+    printf("\nWhat do you want to change?\n");
+    printf(" [1] Name\n");
+    printf(" [2] Age\n");
+    printf(" [3] Salary\n");
+    printf(" [4] Work ID\n");
+    printf(" [5] All of the above\n");
+    printf(" [6] Cancel\n");
+    printf("Choice: ");
+    scanf("%d", &choice);
+    clearKeyboardBuffer();
+
+    switch(choice) {
+        case 1:
+            printf("\nName: ");
+            //scanf("%s", temp2.name);
+            fgets(temp2.name, sizeof(temp2.name), stdin);
+            //omitNewLine(temp2.name);
+            break;
+        case 2:
+            printf("\nAge: ");
+            scanf("%d", &temp2.age);
+            clearKeyboardBuffer();
+            break;
+        case 3:
+            printf("\nSalary: ");
+            scanf("%f", &temp2.salary);
+            clearKeyboardBuffer();
+            break;
+        case 4:
+            printf("\nWork ID: ");
+            fgets(temp2.id, sizeof(temp2.id), stdin);
+            //omitNewLine(temp2.id);
+            //scanf("%s", temp2.id);
+            break;
+        case 5:
+            printf("Name: ");
+            //scanf("%s", temp2.name);
+            fgets(temp2.name, sizeof(temp2.name), stdin);
+            printf("Age: ");
+            scanf("%d", &temp2.age);
+            clearKeyboardBuffer();
+            printf("Salary: ");
+            scanf("%f", &temp2.salary);
+            clearKeyboardBuffer();
+            printf("Work ID: ");
+            fgets(temp2.name, sizeof(temp2.id), stdin);
+            break;
+        case 6:
+            printf("Returning to main menu..\n");
+            fclose(fTemp);
+            if(remove("temp.bin") != 0) {
+                printf("File not successfully removed.\n");
+                exit(-5);
+            }
+            return;
+        default:
+            printf("Choice is incorrect.\n");
+            printf("Returning to main menu..\n\n");
+            fclose(fTemp);
+            if(remove("temp.bin") != 0) {
+                printf("File not successfully removed.\n");
+                exit(-5);
+            }
+            return;
+    }
+    omitNewLine(temp2.name);
+    omitNewLine(temp2.id);
+
+    fseek(fTemp, 0, SEEK_END);
+    fwrite(&temp2, sizeof(Employee), 1, fTemp);
+
+    fp = freopen(FILENAME, "wb+", fp);
+    rewind(fTemp);
+    while(!feof(fTemp)) {
+        if(fread(&temp, sizeof(Employee), 1, fTemp) > 0){
+            fwrite(&temp, sizeof(temp), 1, fp);
+        }
+    }
+
+    // Remove the temp.bin file.
+    fclose(fTemp);
+    if(remove("temp.bin") != 0) {
+            printf("File not successfully removed.\n");
+            exit(-5);
+    }
+
+    printf("Successfully modified.\n\n");
+    return;
 }
 
 /**
@@ -126,6 +271,7 @@ void deleteEmployee() {
 
     // Re-open the main file and transfer the contents
     // from temp to the main file.
+    // Re-opening clears the file
     fp = freopen(FILENAME, "wb+", fp);
     rewind(fTemp);
     while(!feof(fTemp)) {
@@ -141,7 +287,7 @@ void deleteEmployee() {
             exit(-5);
     }
 
-    printf("Successfully deleted.\n");
+    printf("Successfully deleted.\n\n");
 }
 
 /**
@@ -158,7 +304,7 @@ void numOfEmployees() {
     if(fp != NULL) {
         fseek(fp, 0, SEEK_END);
         if(ftell(fp) == 0) {
-            printf("File is empty.\n\n");
+            printf("No employees registered.\n\n");
             return;
         }
     }
@@ -182,4 +328,11 @@ void numOfEmployees() {
 void clearKeyboardBuffer() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF) { }
+}
+
+void omitNewLine(char* str) {
+    int n = -1;
+    if((n = strlen(str)) > 0 && str[n - 1] == '\n') {
+        str[n - 1] = '\0';
+    }
 }

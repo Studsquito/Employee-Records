@@ -20,5 +20,6 @@ void deleteEmployee();
 void numOfEmployees();
 
 void clearKeyboardBuffer();
+void omitNewLine(char* str);
 
 #endif
