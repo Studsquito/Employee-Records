@@ -72,9 +72,10 @@ void listEmployee() {
         Employee temp;
         // fread returns the total # of elements reads
         if(fread(&temp, sizeof(Employee), 1, fp) > 0){
-            printf("Name: \t%8s\n", temp.name);
-            printf("Age: \t%8d\n", temp.age);
-            printf("Salary: %8.2f\n", temp.salary);
+            printf("%d\n", (int)strlen(temp.name));
+            printf("Name: %*s\n", (int)strlen(temp.name), temp.name);
+            printf("Age: %11d\n", temp.age);
+            printf("Salary: %11.2f\n", temp.salary);
             printf("Work ID:%8s\n\n", temp.id);
         }
     }
@@ -165,7 +166,7 @@ void modifyEmployee() {
         case 5:
             printf("Name: ");
             //scanf("%s", temp2.name);
-            fgets(temp2.name, sizeof(temp2.name), stdin);
+            fgets(temp2.name, sizeof(temp2.name ), stdin);
             printf("Age: ");
             scanf("%d", &temp2.age);
             clearKeyboardBuffer();
