@@ -8,7 +8,7 @@ typedef struct employee {
     char name[40];
     int age;
     float salary;
-    char id[10];
+    char id[12];
 } Employee;
 
 void addEmployee();

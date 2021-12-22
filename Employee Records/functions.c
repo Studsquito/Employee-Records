@@ -25,7 +25,7 @@ void addEmployee() {
     clearKeyboardBuffer();
     printf("Work ID: ");
     fgets(temp.id, sizeof(temp.id), stdin);
-    
+
     omitNewLine(temp.name);
     omitNewLine(temp.id);
 
@@ -163,7 +163,7 @@ void modifyEmployee() {
             fgets(temp2.name, sizeof(temp2.id), stdin);
             break;
         case 6:
-            printf("Returning to main menu..\n");
+            printf("Returning to main menu..\n\n");
             fclose(fTemp);
             if(remove("temp.bin") != 0) {
                 printf("File not successfully removed.\n");
@@ -230,8 +230,8 @@ void deleteEmployee() {
 
     // Prompt user which person to delete.
     printf("Which employee would you like to delete: ");
-    scanf("%s", deleted);
-    clearKeyboardBuffer();
+    fgets(deleted, sizeof(deleted), stdin);
+    omitNewLine(deleted);
 
     // Iterate through file to transfer contents.
     rewind(fp);
