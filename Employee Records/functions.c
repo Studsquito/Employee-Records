@@ -12,7 +12,6 @@
 void addEmployee() {
     // Move the cursor to the EOF
     fseek(fp, 0, SEEK_END);
-    int leng = 0;
     Employee temp;
 
     // Prompt user for Employee info
@@ -29,11 +28,6 @@ void addEmployee() {
     
     omitNewLine(temp.name);
     omitNewLine(temp.id);
-    /* if((leng = strlen(temp.name)) > 0 && temp.name[leng - 1] == '\n')
-        temp.name[leng - 1] = '\0';
-    
-    if((leng = strlen(temp.id)) > 0 && temp.id[leng - 1] == '\n')
-        temp.id[leng - 1] = '\0'; */
 
     if(fp == NULL) {
         printf("File isn't open.\n");
@@ -72,11 +66,10 @@ void listEmployee() {
         Employee temp;
         // fread returns the total # of elements reads
         if(fread(&temp, sizeof(Employee), 1, fp) > 0){
-            printf("%d\n", (int)strlen(temp.name));
-            printf("Name: %*s\n", (int)strlen(temp.name), temp.name);
-            printf("Age: %11d\n", temp.age);
-            printf("Salary: %11.2f\n", temp.salary);
-            printf("Work ID:%8s\n\n", temp.id);
+            printf("Name: \t\t%s\n", temp.name);
+            printf("Age: \t\t%d\n", temp.age);
+            printf("Salary: \t%.2f\n", temp.salary);
+            printf("Work ID: \t%s\n\n", temp.id);
         }
     }
 }
@@ -103,12 +96,10 @@ void modifyEmployee() {
     printf("Which employee do you want to modify? ");
     fgets(modified, sizeof(modified), stdin);
     omitNewLine(modified);
-    //scanf("%s", modified);
 
     rewind(fp);
     while(!feof(fp)) {
         if(fread(&temp, sizeof(Employee), 1, fp)) {
-            printf("%d\n", strcmp(temp.name, modified));
             if(strcmp(temp.name, modified) == 0) {
                 temp2 = temp;
             }
@@ -143,9 +134,7 @@ void modifyEmployee() {
     switch(choice) {
         case 1:
             printf("\nName: ");
-            //scanf("%s", temp2.name);
             fgets(temp2.name, sizeof(temp2.name), stdin);
-            //omitNewLine(temp2.name);
             break;
         case 2:
             printf("\nAge: ");
@@ -160,12 +149,9 @@ void modifyEmployee() {
         case 4:
             printf("\nWork ID: ");
             fgets(temp2.id, sizeof(temp2.id), stdin);
-            //omitNewLine(temp2.id);
-            //scanf("%s", temp2.id);
             break;
         case 5:
             printf("Name: ");
-            //scanf("%s", temp2.name);
             fgets(temp2.name, sizeof(temp2.name ), stdin);
             printf("Age: ");
             scanf("%d", &temp2.age);
@@ -215,6 +201,7 @@ void modifyEmployee() {
             exit(-5);
     }
 
+    clearKeyboardBuffer();
     printf("Successfully modified.\n\n");
     return;
 }
